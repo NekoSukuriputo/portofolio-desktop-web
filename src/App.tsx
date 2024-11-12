@@ -1,11 +1,12 @@
-import "./App.css";
+import DesktopGrid from "@/components/common/DesktopGrid";
+import Taskbar from "@/components/taskbar/Taskbar";
 
 function App() {
-
   return (
-    <>
-      <h1 className="text-3xl font-bold underline text-green-400">Hello world!</h1>
-    </>
+    <div className="h-screen w-screen flex flex-col overflow-hidden">
+      <DesktopGrid />
+      <Taskbar />
+    </div>
   );
 }
 
