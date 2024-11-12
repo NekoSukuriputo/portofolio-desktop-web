@@ -6,7 +6,7 @@ import SystemTray from "./SystemTray";
 
 function Taskbar() {
   return (
-    <div className="h-12 bg-vintage-orange text-slate-700 flex items-center">
+    <div className="h-12 z-50 bg-vintage-orange text-slate-700 flex items-center">
       {/* Start Menu di kiri */}
       <div className="mx-2">
         <StartMenu />
