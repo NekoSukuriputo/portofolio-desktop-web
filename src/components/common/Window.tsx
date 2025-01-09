@@ -4,16 +4,21 @@ import Draggable from "react-draggable"; // Import react-draggable untuk fitur d
 const Window = ({ onClick }) => {
   const [isMaximized, setIsMaximized] = useState(false);
 
-  const toggleMaximize = () => {
+  const toggleMaximize = (e) => {
+    e.stopPropagation(); // Mencegah pemicu onClick dari elemen induk
     setIsMaximized(!isMaximized);
   };
 
   return (
-    <Draggable>
+    <Draggable disabled={isMaximized}>
       <div
-        className={`flex absolute flex-col w-96 h-96 bg-white border-2 rounded-md shadow-lg ${
-          isMaximized ? "w-full h-full" : ""
-        }`}
+        className={`flex absolute flex-col bg-white border-2 rounded-md shadow-lg transition-all duration-300 overflow-hidden
+          ${
+            isMaximized
+              ? "top-0 left-0 w-full h-[calc(100vh-3rem)]"
+              : "w-96 h-96"
+          }
+        `}
         onClick={onClick} // Saat window diklik, panggil onClick untuk memperbarui layer
       >
         {/* Header */}
@@ -37,11 +42,6 @@ const Window = ({ onClick }) => {
           <p>
             Welcome to the application window! You can add your content here.
           </p>
-        </div>
-
-        {/* Footer */}
-        <div className="bg-gray-200 p-2 text-sm text-center rounded-b-md">
-          <span>Footer content here</span>
         </div>
       </div>
     </Draggable>
