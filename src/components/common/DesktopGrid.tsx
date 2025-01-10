@@ -1,59 +1,76 @@
 import React, { useState } from "react";
 import Window from "./Window";
 
-function DesktopGrid() {
-  const [windows, setWindows] = useState([]);
+type DesktopGridProps = {
+  onMinimize: (id: number) => void;
+  onClose: (id: number) => void;
+  windows: { id: number; zIndex: number; isMinimized: boolean }[];
+  setWindows: React.Dispatch<
+    React.SetStateAction<{ id: number; zIndex: number; isMinimized: boolean }[]>
+  >;
+};
+
+const DesktopGrid: React.FC<DesktopGridProps> = ({
+  onMinimize,
+  onClose,
+  windows,
+  setWindows,
+}) => {
   const [zIndex, setZIndex] = useState(1); // Mengatur urutan z-index jendela
 
-  // Fungsi untuk menambah jendela baru
   const openWindow = () => {
     setWindows([
       ...windows,
       {
         id: windows.length,
         zIndex: zIndex, // Set zIndex sesuai urutan
+        isMinimized: false,
       },
     ]);
     setZIndex(zIndex + 1); // Meningkatkan zIndex agar jendela baru selalu di atas
   };
 
-  // Fungsi untuk mengatur jendela yang diklik agar tampil di atas
-  const bringToFront = (id) => {
-    const updatedWindows = windows.map((window) =>
-      window.id === id
-        ? { ...window, zIndex: Math.max(...windows.map((w) => w.zIndex)) + 1 }
-        : window
+  const bringToFront = (id: number) => {
+    const maxZIndex = Math.max(...windows.map((win) => win.zIndex));
+    setWindows(
+      windows.map((win) =>
+        win.id === id ? { ...win, zIndex: maxZIndex + 1 } : win
+      )
     );
-    setWindows(updatedWindows);
   };
 
   return (
-    <div className="flex-grow bg-blue-100 p-4 relative">
+    <div className="h-[calc(100vh-3rem)] relative bg-blue-100">
       {/* Ikon Desktop */}
-      <div className="flex flex-col md:flex-row flex-wrap gap-4 w-1/2 md:w-1/4 h-1/3">
-        <div className="bg-white p-4 shadow-md rounded-md">Icon 1</div>
-        <div className="bg-white p-4 shadow-md rounded-md">Icon 2</div>
-        <div className="bg-white p-4 shadow-md rounded-md">Icon 3</div>
+      <div className="p-4">
         <button
-          className="bg-blue-500 p-2 text-white rounded-md mt-4"
+          className="bg-blue-500 p-2 text-white rounded-md"
           onClick={openWindow}
         >
           Open Window
         </button>
       </div>
 
-      {/* Jendela yang Dibuka */}
-      {windows.map((window) => (
-        <div
-          key={window.id}
-          style={{ zIndex: window.zIndex }} // Set zIndex jendela
-          onClick={() => bringToFront(window.id)} // Panggil fungsi untuk bring window to front
-        >
-          <Window onClick={() => bringToFront(window.id)} />
-        </div>
-      ))}
+      {/* Render Windows */}
+      {windows.map(
+        (window) =>
+          !window.isMinimized && (
+            <div
+              key={window.id}
+              style={{ zIndex: window.zIndex }}
+              className="absolute"
+              onClick={() => bringToFront(window.id)}
+            >
+              <Window
+                onMinimize={() => onMinimize(window.id)}
+                onClose={() => onClose(window.id)}
+                onClick={() => bringToFront(window.id)}
+              />
+            </div>
+          )
+      )}
     </div>
   );
-}
+};
 
 export default DesktopGrid;

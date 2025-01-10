@@ -1,20 +1,29 @@
-// src/components/taskbar/Taskbar.js
-
-import AppList from "./AppList";
+import React from "react";
 import StartMenu from "./StartMenu";
 import SystemTray from "./SystemTray";
 
-function Taskbar() {
+type TaskbarProps = {
+  minimizedWindows: { id: number }[];
+  onRestore: (id: number) => void;
+};
+
+const Taskbar: React.FC<TaskbarProps> = ({ minimizedWindows, onRestore }) => {
   return (
     <div className="h-12 z-50 bg-vintage-orange text-slate-700 flex items-center">
-      {/* Start Menu di kiri */}
-      <div className="mx-2">
-        <StartMenu />
-      </div>
+      {/* Start Menu */}
+      <StartMenu />
 
-      {/* Daftar aplikasi aktif */}
-      <div className="mx-2">
-        <AppList />
+      {/* Icons for Minimized Windows */}
+      <div className="flex space-x-2">
+        {minimizedWindows.map((win) => (
+          <button
+            key={win.id}
+            className="px-4 py-2 bg-vintage-orange text-slate-700 rounded-md hover:bg-vintage-orange-hover"
+            onClick={() => onRestore(win.id)}
+          >
+            App {win.id}
+          </button>
+        ))}
       </div>
 
       {/* System Tray di kanan */}
@@ -23,6 +32,6 @@ function Taskbar() {
       </div>
     </div>
   );
-}
+};
 
 export default Taskbar;
